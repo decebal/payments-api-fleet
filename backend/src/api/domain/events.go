@@ -1,21 +1,21 @@
 package domain
 
-//AccountCreated event
+// AccountCreated event
 type AccountCreated struct {
 	Owner string `json:"owner"`
 }
 
-//DepositPerformed event
+// DepositPerformed event
 type DepositPerformed struct {
 	Amount int `json:"ammount"`
 }
 
-//OwnerChanged event
+// OwnerChanged event
 type OwnerChanged struct {
 	Owner string `json:"owner"`
 }
 
-//WithdrawalPerformed event
+// WithdrawalPerformed event
 type WithdrawalPerformed struct {
 	Amount int `json:"ammount"`
 }

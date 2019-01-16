@@ -6,7 +6,7 @@ import (
 	"github.com/mishudark/eventhus"
 	"github.com/mishudark/eventhus/commandhandler/basic"
 	"github.com/mishudark/eventhus/config"
-	bank "github.com/decebal/payments-api-fleet/src/api/domain"
+	"github.com/mishudark/eventhus/examples/bank"
 
 	"github.com/mishudark/eventhus/utils"
 	"os"

@@ -6,17 +6,17 @@ import (
 	"github.com/mishudark/eventhus"
 )
 
-//ErrBalanceOut when you don't have balance to perform the operation
+// ErrBalanceOut when you don't have balance to perform the operation
 var ErrBalanceOut = errors.New("balance out")
 
-//Account of bank
+// Account of bank
 type Account struct {
 	eventhus.BaseAggregate
 	Owner   string
 	Balance int
 }
 
-//ApplyChange to account
+// ApplyChange to account
 func (a *Account) ApplyChange(event eventhus.Event) {
 	switch e := event.Data.(type) {
 	case *AccountCreated:
@@ -29,7 +29,7 @@ func (a *Account) ApplyChange(event eventhus.Event) {
 	}
 }
 
-//HandleCommand create events and validate based on such command
+// HandleCommand create events and validate based on such command
 func (a *Account) HandleCommand(command eventhus.Command) error {
 	event := eventhus.Event{
 		AggregateID:   a.ID,
