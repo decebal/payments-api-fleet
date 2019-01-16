@@ -47,7 +47,7 @@ envs:
 enter:
 	docker-compose run $(SERVICE) /bin/sh
 
-test:
+test-docker:
 	docker-compose run $(SERVICE) /bin/sh -c "go test ./test/..."
 
 test-local:

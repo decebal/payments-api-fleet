@@ -1,5 +1,8 @@
 build-deps:
 	go mod download
 
-test:
+test-local:
 	ginkgo ./test/...
+
+coverage:
+	courtney ./src/...
