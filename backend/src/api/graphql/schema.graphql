@@ -1,14 +1,9 @@
 # Core definitions
 
 interface Connection {
-    edges: [Edge]
+    edges: [Entity]
     pageInfo: PageInfo!
     totalCount: NaturalNumber
-}
-
-interface Edge {
-    node: Entity
-    cursor: Cursor!
 }
 
 # Sort info for sorting connection's edges.

@@ -1,5 +1,3 @@
-//go:generate go run scripts/gqlgen.go -v
-
 package graphql
 
 import (
@@ -31,13 +29,4 @@ func (r *queryResolver) Payment(ctx context.Context, id string) (*Payment, error
 }
 func (r *queryResolver) Payments(ctx context.Context, first *string, after *string, last *string, before *string, sort *Sorting) (*PaymentsConnection, error) {
 	panic("not implemented")
-}
-
-func NewResolver() Config {
-	r := Resolver{}
-
-
-	return Config{
-		Resolvers: &r,
-	}
 }

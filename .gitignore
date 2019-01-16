@@ -27,5 +27,5 @@ _testmain.go
 
 # DotEnv
 .env
-/backend/src/docs/back-end_developer_-_api_coding_exercise.pdf
-/backend/src/docs/payments.json
+/docs/back-end_developer_-_api_coding_exercise.pdf
+/docs/payments.json

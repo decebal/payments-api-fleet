@@ -1,4 +1,4 @@
-package bank
+package domain
 
 import "github.com/mishudark/eventhus"
 

@@ -1,32 +1,38 @@
 package main
 
 import (
+	"github.com/decebal/payments-api-fleet/src/api/graphql"
+	"log"
 	"net/http"
+	"os"
 
 	"github.com/99designs/gqlgen/handler"
-	apiServer "github.com/decebal/payments-api-fleet/api/graphql"
+
 	"github.com/go-chi/chi"
 	"github.com/rs/cors"
 )
 
+const defaultPort = "8080"
+
 func main() {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = defaultPort
+	}
+
 	router := chi.NewRouter()
 
 	// Add CORS middleware around every request
 	// See https://github.com/rs/cors for full option listing
 	router.Use(cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:8080"},
+		AllowedOrigins:   []string{"http://localhost:"+port},
 		AllowCredentials: true,
 		Debug:            true,
 	}).Handler)
 
 	router.Handle("/", handler.Playground("Payments Api", "/graphql"))
-	router.Handle("/graphql",
-		handler.GraphQL(apiServer.NewExecutableSchema(apiServer.NewResolver())),
-	)
+	router.Handle("/graphql", handler.GraphQL(graphql.NewExecutableSchema(graphql.Config{Resolvers: &graphql.Resolver{}})))
 
-	err := http.ListenAndServe(":8080", router)
-	if err != nil {
-		panic(err)
-	}
+	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }

@@ -1,10 +1,5 @@
 build-deps:
-	go get -u
+	go mod download
 
 test:
 	ginkgo ./test/...
-
-link:
-	gvm linkthis
-generate:
-	go generate ./...

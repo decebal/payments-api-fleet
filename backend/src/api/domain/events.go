@@ -1,4 +1,4 @@
-package bank
+package domain
 
 //AccountCreated event
 type AccountCreated struct {

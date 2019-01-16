@@ -59,10 +59,6 @@ type DebtorParty struct {
 	Name              *string `json:"name"`
 }
 
-type Edge interface {
-	IsEdge()
-}
-
 type Entity interface {
 	IsEntity()
 }
