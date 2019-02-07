@@ -13,13 +13,13 @@ import (
 )
 
 func getConfig() (eventhus.CommandBus, error) {
-	//register events
+	// register events
 	reg := eventhus.NewEventRegister()
 	reg.Set(bank.AccountCreated{})
 	reg.Set(bank.DepositPerformed{})
 	reg.Set(bank.WithdrawalPerformed{})
 
-	//eventbus
+	// eventbus
 	// rabbit, err := config.RabbitMq("guest", "guest", "localhost", 5672)
 
 	return config.NewClient(
@@ -49,7 +49,7 @@ func main() {
 
 	end := make(chan bool)
 
-	//Create Account
+	// Create Account
 	for i := 0; i < 3; i++ {
 		go func() {
 			uuid, err := utils.UUID()
@@ -57,7 +57,7 @@ func main() {
 				return
 			}
 
-			//1) Create an account
+			// 1) Create an account
 			var account bank.CreateAccount
 			account.AggregateID = uuid
 			account.Owner = "mishudark"
@@ -65,7 +65,7 @@ func main() {
 			commandBus.HandleCommand(account)
 			glog.Infof("account %s - account created", uuid)
 
-			//2) Perform a deposit
+			// 2) Perform a deposit
 			// time.Sleep(time.Millisecond * 100)
 			deposit := bank.PerformDeposit{
 				Amount: 300,
@@ -77,7 +77,7 @@ func main() {
 			commandBus.HandleCommand(deposit)
 			glog.Infof("account %s - deposit performed", uuid)
 
-			//3) Perform a withdrawl
+			// 3) Perform a withdrawl
 			// time.Sleep(time.Millisecond * 100)
 			withdrawl := bank.PerformWithdrawal{
 				Amount: 249,

@@ -2,26 +2,22 @@ package domain
 
 import "github.com/mishudark/eventhus"
 
-// CreateAccount assigned to an owner
-type CreateAccount struct {
+// PerformPayment to a registered organization
+type PerformPayment struct {
 	eventhus.BaseCommand
-	Owner string
+	OrganizationId int
+	Attributes Attributes
 }
 
-// PerformDeposit to a given account
-type PerformDeposit struct {
+// UpdatePayment, this should be split in more specific use cases, general for now
+type UpdatePayment struct {
 	eventhus.BaseCommand
-	Amount int
+	Attributes Attributes
 }
 
-// ChangeOwner of an account
-type ChangeOwner struct {
+// Delete Payment, this should be a corner case,
+// e.g. for times where a payment was registered by mistake,
+// or unconfirmed by the payment processor
+type DeletePayment struct {
 	eventhus.BaseCommand
-	Owner string
-}
-
-// PerformWithdrawal to a given account
-type PerformWithdrawal struct {
-	eventhus.BaseCommand
-	Amount int
 }

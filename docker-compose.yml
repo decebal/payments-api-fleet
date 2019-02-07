@@ -2,16 +2,19 @@ backend:
   build: ./backend
   environment:
     - PORT=${PORT_APP_INTERNAL}
-  expose:
-    - ${PORT_APP_EXTERNAL}
+#  expose:
+#    - ${PORT_APP_EXTERNAL}
   ports:
-    - "${PORT_APP_EXTERNAL}:${PORT_APP_INTERNAL}"
+#    - "${PORT_APP_EXTERNAL}:${PORT_APP_INTERNAL}"
+    - "8080:8080"
   links:
     - nats
     - mongo
 
 mongo:
   image: mvertes/alpine-mongo
+  volumes:
+    - ./containers/db/mongo/:/data/db
   ports:
     - "27017:27017"
 

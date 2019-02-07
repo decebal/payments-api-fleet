@@ -3,6 +3,7 @@ build-deps:
 
 test-local:
 	ginkgo ./test/...
+	go test -tags=integration
 
 coverage:
 	courtney ./src/...

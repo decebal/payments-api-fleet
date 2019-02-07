@@ -51,4 +51,4 @@ test-docker:
 	docker-compose run $(SERVICE) /bin/sh -c "go test ./test/..."
 
 test-local:
-	$(MAKE) -C ./$(SERVICE) MAKEFLAGS=test
+	$(MAKE) -C ./$(SERVICE) MAKEFLAGS=test-local
