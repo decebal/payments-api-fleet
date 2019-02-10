@@ -25,7 +25,7 @@ func main() {
 	// Add CORS middleware around every request
 	// See https://github.com/rs/cors for full option listing
 	router.Use(cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:"+port},
+		AllowedOrigins:   []string{"http://0.0.0.0:"+port},
 		AllowCredentials: true,
 		Debug:            true,
 	}).Handler)
@@ -33,6 +33,6 @@ func main() {
 	router.Handle("/", handler.Playground("Payments Api", "/graphql"))
 	router.Handle("/graphql", handler.GraphQL(graphql.NewExecutableSchema(graphql.Config{Resolvers: &graphql.Resolver{}})))
 
-	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
+	log.Printf("connect to http://0.0.0.0:%s/ for GraphQL playground", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
