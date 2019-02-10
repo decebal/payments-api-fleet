@@ -7,7 +7,7 @@ import (
 // base Aggregate - Payment
 type Payment struct {
 	eventhus.BaseAggregate
-	OrganisationId int
+	OrganisationId string
 	Attributes     Attributes
 }
 

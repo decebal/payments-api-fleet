@@ -5,7 +5,7 @@ import "github.com/mishudark/eventhus"
 // PerformPayment to a registered organization
 type PerformPayment struct {
 	eventhus.BaseCommand
-	OrganizationId int
+	OrganizationId string
 	Attributes Attributes
 }
 

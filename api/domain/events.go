@@ -2,7 +2,7 @@ package domain
 
 // AddPayment event
 type PaymentPerformed struct {
-	OrganizationId int        `json:"organization_id"`
+	OrganizationId string     `json:"organization_id"`
 	Attributes     Attributes `json:"attributes"`
 }
 

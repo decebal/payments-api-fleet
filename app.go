@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/decebal/payments-api-fleet/src/api/graphql"
+	"github.com/decebal/payments-api-fleet/api/graphql"
 	"log"
 	"net/http"
 	"os"
