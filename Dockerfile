@@ -17,4 +17,4 @@ COPY backend $APP_PATH
 WORKDIR $APP_PATH
 RUN make build-deps
 
-CMD ["sh", "-c", "go run $(echo ${APP_PATH}/src/app.go)"]
+CMD ["sh", "-c", "go run $(echo ${APP_PATH}/api.go)"]
