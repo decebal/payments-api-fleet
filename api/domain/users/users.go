@@ -22,7 +22,11 @@ func GetUsers(w http.ResponseWriter, r *http.Request, u users.User) {
 
 	l := users.GetAllUsers()
 
-	json.NewEncoder(w).Encode(l)
+	err := json.NewEncoder(w).Encode(l)
+	if err != nil {
+		errorHandler.OutputHTTPError(err.Error(), w, http.StatusInternalServerError)
+		return
+	}
 }
 
 // AddUser processes a new user request and returns the new user if successful
@@ -46,7 +50,11 @@ func AddUser(w http.ResponseWriter, r *http.Request, u users.User) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(user)
+	err = json.NewEncoder(w).Encode(user)
+	if err != nil {
+		errorHandler.OutputHTTPError(err.Error(), w, http.StatusInternalServerError)
+		return
+	}
 }
 
 // DeleteUser processes the removal of a user and reports 204 on ok
@@ -54,7 +62,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request, u users.User, id int) {
 	err := users.RemoveUser(id)
 
 	if err == nil {
-		w.WriteHeader(http.StatusOK)
+		w.WriteHeader(http.StatusNoContent)
 		return
 	}
 

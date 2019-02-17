@@ -7,26 +7,88 @@ import (
 )
 
 var Payments = []Payment{
-	Payment{ID:"4ee3a8d8-ca7b-4290-a52c-dd5b6165ec43", Version:0, OrganisationId: "743d5b63-8e6f-432e-a8fa-c5d8d2ee5fcb",},
-	Payment{ID:"216d4da9-e59a-4cc6-8df3-3da6e7580b77", Version:0, OrganisationId: "743d5b63-8e6f-432e-a8fa-c5d8d2ee5fcb",},
-	Payment{ID:"7eb8277a-6c91-45e9-8a03-a27f82aca350", Version:0, OrganisationId: "743d5b63-8e6f-432e-a8fa-c5d8d2ee5fcb",},
-	Payment{ID:"97fe60ba-1334-439f-91db-32cc3cde036a", Version:0, OrganisationId: "743d5b63-8e6f-432e-a8fa-c5d8d2ee5fcb",},
-	Payment{ID:"ab4bbd28-33c6-4231-9b64-0e96190f59ef", Version:0, OrganisationId: "743d5b63-8e6f-432e-a8fa-c5d8d2ee5fcb",},
-	Payment{ID:"7f172f5c-f810-4ebe-b015-cb1fc24c6b66", Version:0, OrganisationId: "743d5b63-8e6f-432e-a8fa-c5d8d2ee5fcb",},
+	Payment{ID: "4ee3a8d8-ca7b-4290-a52c-dd5b6165ec43", Version: 0, OrganisationId: "743d5b63-8e6f-432e-a8fa-c5d8d2ee5fcb",},
+	Payment{ID: "216d4da9-e59a-4cc6-8df3-3da6e7580b77", Version: 0, OrganisationId: "743d5b63-8e6f-432e-a8fa-c5d8d2ee5fcb",},
+	Payment{ID: "7eb8277a-6c91-45e9-8a03-a27f82aca350", Version: 0, OrganisationId: "743d5b63-8e6f-432e-a8fa-c5d8d2ee5fcb",},
+	Payment{ID: "97fe60ba-1334-439f-91db-32cc3cde036a", Version: 0, OrganisationId: "743d5b63-8e6f-432e-a8fa-c5d8d2ee5fcb",},
+	Payment{ID: "ab4bbd28-33c6-4231-9b64-0e96190f59ef", Version: 0, OrganisationId: "743d5b63-8e6f-432e-a8fa-c5d8d2ee5fcb",},
+	Payment{ID: "7f172f5c-f810-4ebe-b015-cb1fc24c6b66", Version: 0, OrganisationId: "743d5b63-8e6f-432e-a8fa-c5d8d2ee5fcb",},
 }
 
-type Payment struct {
-	ID       string `json:"id"`
-	Type     string `json:"type"`
-	Version  float32 `json:"version"`
-	Attributes Attributes `json:"attributes"`
-	OrganisationId string `json:"organisation_id"`
-	Created  time.Time
-	Updated  time.Time
+type BeneficiaryParty struct {
+	accountName       string
+	accountNumber     string
+	accountNumberCode string
+	accountType       int
+	address           string
+	bankId            string
+	bankIdCode        string
+	name              string
+}
+
+type Charge struct {
+	amount   float32
+	currency string
+}
+
+type ChargesInformation struct {
+	bearerCode              string
+	senderCharges           []Charge
+	receiverChargesAmount   float32
+	receiverChargesCurrency string
+}
+
+type DebtorParty struct {
+	accountName       string
+	accountNumber     string
+	accountNumberCode string
+	address           string
+	bankId            string
+	bankIdCode        string
+	name              string
+}
+
+type Fx struct {
+	contractReference string
+	exchangeRate      float32
+	originalAmount    float32
+	originalCurrency  string
+}
+
+type SponsorParty struct {
+	accountNumber string
+	bankId        string
+	bankIdCode    string
 }
 
 type Attributes struct {
+	amount               int
+	beneficiaryParty     BeneficiaryParty
+	chargesInformation   ChargesInformation
+	currency             string
+	debtorParty          DebtorParty
+	endToEndReference    string
+	fx                   Fx
+	numericReference     int
+	paymentId            string
+	paymentPurpose       string
+	paymentScheme        string
+	paymentType          string
+	processingDate       string
+	reference            string
+	schemePaymentSubType string
+	schemePaymentType    string
+	sponsorParty         SponsorParty
+}
 
+type Payment struct {
+	ID             string     `json:"id"`
+	Type           string     `json:"type"`
+	Version        float32    `json:"version"`
+	Attributes     Attributes `json:"attributes"`
+	OrganisationId string     `json:"organisation_id"`
+	Created        time.Time
+	Updated        time.Time
 }
 
 func getNewPaymentID() string {
@@ -84,12 +146,12 @@ func RemovePayment(id string) error {
 // AddPayment to the main users table
 func AddPayment(organisationId string, attributes Attributes) (Payment, error) {
 	p := Payment{
-		ID: getNewPaymentID(),
-		Version: 0,
-		Type: "Payment",
+		ID:         getNewPaymentID(),
+		Version:    0,
+		Type:       "Payment",
 		Attributes: attributes,
-		Created: time.Now(),
-		Updated: time.Now(),
+		Created:    time.Now(),
+		Updated:    time.Now(),
 	}
 
 	// any validation over new payments should go in here

@@ -90,7 +90,7 @@ func RemoveUser(id int) error {
 		return e
 	}
 
-	test := func(u User) bool { return u.ID == id }
+	test := func(u User) bool { return u.ID != id }
 	Users = filter(test)
 
 	return nil
@@ -99,20 +99,16 @@ func RemoveUser(id int) error {
 // AddUser to the main users table
 func AddUser(username, password string) (User, error) {
 	u := User{
-		ID: getNewUserID(),
+		ID:       getNewUserID(),
 		Username: username,
 		password: password,
-		Created: time.Now(),
-		Updated: time.Now(),
+		Created:  time.Now(),
+		Updated:  time.Now(),
 	}
 
-	user, e := GetUserByUsername(strings.ToLower(u.Username))
+	_, e := GetUserByUsername(strings.ToLower(u.Username))
 
-	if e != nil {
-		return User{}, e
-	}
-
-	if user.Username != "" {
+	if e == nil {
 		return User{}, errors.New("username already exists: " + username)
 	}
 

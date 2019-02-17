@@ -8,6 +8,7 @@ import (
 	domainUsers "github.com/decebal/payments-api-fleet/api/persistence/domain/users"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 func shouldAuthorize(fn func(http.ResponseWriter, *http.Request, domainUsers.User)) http.HandlerFunc {
@@ -43,7 +44,9 @@ func userHandler(w http.ResponseWriter, r *http.Request, u domainUsers.User) {
 	}
 
 	if r.Method == http.MethodDelete {
-		if id, err := strconv.Atoi("0"); err == nil {
+		params := strings.Split(r.URL.String(), "/")
+
+		if id, err := strconv.Atoi(params[2]); err == nil {
 			users.DeleteUser(w, r, u, id)
 			return
 		}

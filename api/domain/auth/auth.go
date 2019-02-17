@@ -51,5 +51,9 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	t := loginSuccess{Token: token}
-	json.NewEncoder(w).Encode(t)
+	err = json.NewEncoder(w).Encode(t)
+	if err != nil {
+		errorHandler.OutputHTTPError("cannot encode token", w, http.StatusInternalServerError)
+		return
+	}
 }

@@ -12,5 +12,8 @@ type errorResponse struct {
 func OutputHTTPError(e string, w http.ResponseWriter, status int) {
 	errResponse := errorResponse{e}
 	w.WriteHeader(status)
-	json.NewEncoder(w).Encode(errResponse)
+	err := json.NewEncoder(w).Encode(errResponse)
+	if err != nil {
+		panic(err)
+	}
 }

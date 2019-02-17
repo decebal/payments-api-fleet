@@ -58,7 +58,7 @@ func TestUnauthorized(t *testing.T) {
 }
 
 func TestLoginSuccess(t *testing.T) {
-	user := LoginRequest{"Cbrown", "cbrown123"}
+	user := LoginRequest{"cbrown", "cbrown123"}
 	jsonData, _ := json.Marshal(user)
 
 	req, _ := http.NewRequest("POST", "/auth/login", bytes.NewBuffer(jsonData))
@@ -80,10 +80,10 @@ func TestLoginSuccess(t *testing.T) {
 }
 
 func TestLoginFail(t *testing.T) {
-	user := LoginRequest{"cbrown", "312nworbc"}
-	jsondata, _ := json.Marshal(user)
+	user := LoginRequest{"Cbrown", "312nworbc"}
+	jsonData, _ := json.Marshal(user)
 
-	req, _ := http.NewRequest("POST", "/auth/login", bytes.NewBuffer(jsondata))
+	req, _ := http.NewRequest("POST", "/auth/login", bytes.NewBuffer(jsonData))
 	req.Header.Set("Content-Type", "application/json")
 
 	testHTTPResponse(t, req, func(w *httptest.ResponseRecorder) bool {
