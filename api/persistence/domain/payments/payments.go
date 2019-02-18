@@ -1,7 +1,9 @@
 package payments
 
 import (
+	"encoding/json"
 	"errors"
+	"github.com/imdario/mergo"
 	"github.com/satori/go.uuid"
 	"time"
 )
@@ -16,77 +18,82 @@ var Payments = []Payment{
 }
 
 type BeneficiaryParty struct {
-	accountName       string
-	accountNumber     string
-	accountNumberCode string
-	accountType       int
-	address           string
-	bankId            string
-	bankIdCode        string
-	name              string
+	AccountName       string
+	AccountNumber     string
+	AccountNumberCode string
+	AccountType       int
+	Address           string
+	BankId            string
+	BankIdCode        string
+	Name              string
 }
 
 type Charge struct {
-	amount   float32
-	currency string
+	Amount   float32
+	Currency string
 }
 
 type ChargesInformation struct {
-	bearerCode              string
-	senderCharges           []Charge
-	receiverChargesAmount   float32
-	receiverChargesCurrency string
+	BearerCode              string
+	SenderCharges           []Charge
+	ReceiverChargesAmount   float32
+	ReceiverChargesCurrency string
 }
 
 type DebtorParty struct {
-	accountName       string
-	accountNumber     string
-	accountNumberCode string
-	address           string
-	bankId            string
-	bankIdCode        string
-	name              string
+	AccountName       string
+	AccountNumber     string
+	AccountNumberCode string
+	Address           string
+	BankId            string
+	BankIdCode        string
+	Name              string
 }
 
 type Fx struct {
-	contractReference string
-	exchangeRate      float32
-	originalAmount    float32
-	originalCurrency  string
+	ContractReference string
+	ExchangeRate      float32
+	OriginalAmount    float32
+	OriginalCurrency  string
 }
 
 type SponsorParty struct {
-	accountNumber string
-	bankId        string
-	bankIdCode    string
+	AccountNumber string
+	BankId        string
+	BankIdCode    string
 }
 
 type Attributes struct {
-	amount               int
-	beneficiaryParty     BeneficiaryParty
-	chargesInformation   ChargesInformation
-	currency             string
-	debtorParty          DebtorParty
-	endToEndReference    string
-	fx                   Fx
-	numericReference     int
-	paymentId            string
-	paymentPurpose       string
-	paymentScheme        string
-	paymentType          string
-	processingDate       string
-	reference            string
-	schemePaymentSubType string
-	schemePaymentType    string
-	sponsorParty         SponsorParty
+	Amount               float64
+	BeneficiaryParty     BeneficiaryParty
+	ChargesInformation   ChargesInformation
+	Currency             string
+	DebtorParty          DebtorParty
+	EndToEndReference    string
+	Fx                   Fx
+	NumericReference     int
+	PaymentId            string
+	PaymentPurpose       string
+	PaymentScheme        string
+	PaymentType          string
+	ProcessingDate       string
+	Reference            string
+	SchemePaymentSubType string
+	SchemePaymentType    string
+	SponsorParty         SponsorParty
+}
+
+func (a *Attributes) String() string {
+	jsonData, _ := json.Marshal(a)
+	return string(jsonData)
 }
 
 type Payment struct {
-	ID             string     `json:"id"`
-	Type           string     `json:"type"`
-	Version        float32    `json:"version"`
-	Attributes     Attributes `json:"attributes"`
-	OrganisationId string     `json:"organisation_id"`
+	ID             string
+	Type           string
+	Version        float32
+	Attributes     Attributes
+	OrganisationId string
 	Created        time.Time
 	Updated        time.Time
 }
@@ -137,26 +144,69 @@ func RemovePayment(id string) error {
 		return e
 	}
 
-	test := func(p Payment) bool { return p.ID == id }
+	test := func(p Payment) bool { return p.ID != id }
 	Payments = filter(test)
 
 	return nil
 }
 
-// AddPayment to the main users table
+// AddPayment to the main payments list
 func AddPayment(organisationId string, attributes Attributes) (Payment, error) {
 	p := Payment{
-		ID:         getNewPaymentID(),
-		Version:    0,
-		Type:       "Payment",
-		Attributes: attributes,
-		Created:    time.Now(),
-		Updated:    time.Now(),
+		ID:             getNewPaymentID(),
+		Version:        0,
+		Type:           "Payment",
+		Attributes:     attributes,
+		OrganisationId: organisationId,
+		Created:        time.Now(),
+		Updated:        time.Now(),
 	}
 
 	// any validation over new payments should go in here
 
 	Payments = append(Payments, p)
+
+	return p, nil
+}
+
+// UpdatePayment from the existing list
+func UpdatePayment(id string, attributes Attributes) (Payment, error) {
+	existingPayment, err := GetPaymentByID(id)
+
+	if err != nil {
+		return Payment{}, err
+	}
+
+	err = mergo.Merge(&attributes, existingPayment.Attributes)
+
+	if err != nil {
+		return Payment{}, err
+	}
+
+	p := Payment{
+		Version:        existingPayment.Version + 1,
+		Attributes:     attributes,
+		Updated:        time.Now(),
+		OrganisationId: existingPayment.OrganisationId,
+		Type:           existingPayment.Type,
+		ID:             existingPayment.ID,
+		Created:        existingPayment.Created,
+	}
+
+	// any validation over payment details should go in here
+
+	var auxPayments []Payment
+
+	test := func(p Payment) bool { return p.ID == id }
+
+	for _, payment := range Payments {
+		if test(payment) {
+			auxPayments = append(auxPayments, p)
+		} else {
+			auxPayments = append(auxPayments, payment)
+		}
+	}
+	Payments = auxPayments
 
 	return p, nil
 }

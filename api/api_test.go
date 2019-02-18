@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"github.com/decebal/payments-api-fleet/api/auth"
+	"github.com/decebal/payments-api-fleet/api/persistence/domain/payments"
 	"github.com/decebal/payments-api-fleet/api/persistence/domain/users"
 	"github.com/decebal/payments-api-fleet/api/routes"
 	"io/ioutil"
@@ -49,6 +50,7 @@ func testHTTPResponse(t *testing.T, req *http.Request, f func(w *httptest.Respon
 	}
 }
 
+// Authorization & Authentication
 func TestUnauthorized(t *testing.T) {
 	req, _ := http.NewRequest("GET", "/users", nil)
 
@@ -101,6 +103,7 @@ func TestLoginFail(t *testing.T) {
 	})
 }
 
+// Users
 func TestGetUsers(t *testing.T) {
 	token, _ := auth.GetJWT("cbrown", 1)
 
@@ -180,5 +183,136 @@ func TestRemoveUser(t *testing.T) {
 
 	testHTTPResponse(t, req, func(w *httptest.ResponseRecorder) bool {
 		return w.Code == http.StatusNoContent && len(users.Users) == requiredLen
+	})
+}
+
+// Payments
+
+type NewPaymentRequest struct {
+	OrganisationId string              `json:"organisation_id"`
+	Attributes     payments.Attributes `json:"attributes"`
+}
+
+type PatchPaymentRequest struct {
+	ID             string              `json:"id"`
+	Attributes     payments.Attributes `json:"attributes"`
+}
+
+type PaymentResponse struct {
+	ID             string              `json:"id"`
+	Created        string              `json:"created"`
+	Updated        string              `json:"updated"`
+	Type           string              `json:"type"`
+	Version        float32             `json:"version"`
+	Attributes     payments.Attributes `json:"attributes"`
+	OrganisationId string              `json:"organisation_id"`
+}
+
+func TestGetPayments(t *testing.T) {
+	token, _ := auth.GetJWT("cbrown", 1)
+
+	req, _ := http.NewRequest("GET", "/payments", nil)
+	req.Header.Set("Authorization", "Bearer "+token)
+
+	testHTTPResponse(t, req, func(w *httptest.ResponseRecorder) bool {
+		var paymentsList []PaymentResponse
+		body, err := ioutil.ReadAll(w.Body)
+
+		if err != nil {
+			return false
+		}
+
+		err = json.Unmarshal(body, &paymentsList)
+
+		return w.Code == http.StatusOK && err == nil
+	})
+}
+
+func TestAddPayment(t *testing.T) {
+	token, _ := auth.GetJWT("cbrown", 1)
+
+	newPaymentRequest := NewPaymentRequest{
+		OrganisationId: "743d5b63-8e6f-432e-a8fa-c5d8d2ee5fcb",
+		Attributes: payments.Attributes{
+			Amount:   100.21,
+			Currency: "GBP",
+		},
+	}
+	jsonData, _ := json.Marshal(newPaymentRequest)
+
+	req, _ := http.NewRequest("POST", "/payments", bytes.NewBuffer(jsonData))
+	req.Header.Set("Authorization", "Bearer "+token)
+	req.Header.Set("Content-Type", "application/json")
+
+	testHTTPResponse(t, req, func(w *httptest.ResponseRecorder) bool {
+		var paymentResponse PaymentResponse
+
+		body, err := ioutil.ReadAll(w.Body)
+
+		if err != nil {
+			return false
+		}
+
+		err = json.Unmarshal(body, &paymentResponse)
+
+		return w.Code == http.StatusOK &&
+			err == nil &&
+			newPaymentRequest.Attributes.String() == paymentResponse.Attributes.String()
+	})
+}
+
+func TestUpdatePaymentById(t *testing.T) {
+	token, _ := auth.GetJWT("cbrown", 1)
+
+	paymentUuid := "4ee3a8d8-ca7b-4290-a52c-dd5b6165ec43"
+	patchPaymentRequest := PatchPaymentRequest{
+		ID: paymentUuid,
+		Attributes: payments.Attributes{
+			Amount:            100.21,
+			Currency:          "GBP",
+			EndToEndReference: "Wil piano Jan",
+			Fx: payments.Fx{
+				ContractReference: "FX123",
+				ExchangeRate:      2.00000,
+				OriginalAmount:    200.42,
+				OriginalCurrency:  "USD",
+			},
+		},
+	}
+	jsonData, _ := json.Marshal(patchPaymentRequest)
+
+	req, _ := http.NewRequest("PATCH", "/payments/"+paymentUuid, bytes.NewBuffer(jsonData))
+	req.Header.Set("Authorization", "Bearer "+token)
+	req.Header.Set("Content-Type", "application/json")
+
+	testHTTPResponse(t, req, func(w *httptest.ResponseRecorder) bool {
+		var paymentResponse PaymentResponse
+		body, err := ioutil.ReadAll(w.Body)
+
+		if err != nil {
+			return false
+		}
+
+		err = json.Unmarshal(body, &paymentResponse)
+
+		return w.Code == http.StatusOK &&
+			err == nil &&
+			patchPaymentRequest.Attributes.String() == paymentResponse.Attributes.String()
+	})
+}
+
+func TestRemovePayment(t *testing.T) {
+	token, _ := auth.GetJWT("cbrown", 1)
+
+	paymentUuid := "4ee3a8d8-ca7b-4290-a52c-dd5b6165ec43"
+	req, _ := http.NewRequest("DELETE", "/payments/"+paymentUuid, nil)
+
+	requiredLen := len(payments.Payments) - 1
+
+	req.Header.Set("Authorization", "Bearer "+token)
+
+	testHTTPResponse(t, req, func(w *httptest.ResponseRecorder) bool {
+		return w.Code == http.StatusNoContent &&
+			len(payments.Payments) == requiredLen
 	})
 }
