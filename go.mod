@@ -2,7 +2,7 @@ module github.com/decebal/payments-api-fleet
 
 require (
 	github.com/cosiner/argv v0.0.1 // indirect
-	github.com/derekparker/delve v1.1.0 // indirect
+	github.com/derekparker/delve v1.2.0 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/imdario/mergo v0.3.7
 	github.com/mattn/go-isatty v0.0.4 // indirect
