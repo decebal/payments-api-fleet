@@ -9,9 +9,7 @@ require (
 	github.com/peterh/liner v1.1.0 // indirect
 	github.com/satori/go.uuid v1.2.0
 	github.com/sirupsen/logrus v1.3.0 // indirect
-	github.com/spf13/cobra v0.0.3 // indirect
-	github.com/spf13/pflag v1.0.3 // indirect
+	github.com/spf13/cobra v0.0.4 // indirect
 	golang.org/x/arch v0.0.0-20181203225421-5a4828bb7045 // indirect
 	golang.org/x/sys v0.0.0-20190215142949-d0b11bdaac8a // indirect
-	gopkg.in/yaml.v2 v2.2.2 // indirect
 )
