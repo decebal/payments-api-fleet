@@ -10,6 +10,6 @@ require (
 	github.com/satori/go.uuid v1.2.0
 	github.com/sirupsen/logrus v1.3.0 // indirect
 	github.com/spf13/cobra v0.0.4 // indirect
-	golang.org/x/arch v0.0.0-20181203225421-5a4828bb7045 // indirect
+	golang.org/x/arch v0.0.0-20190520085958-788fe5ffcd8c // indirect
 	golang.org/x/sys v0.0.0-20190215142949-d0b11bdaac8a // indirect
 )
