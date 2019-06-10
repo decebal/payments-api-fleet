@@ -9,6 +9,6 @@ require (
 	github.com/peterh/liner v1.1.0 // indirect
 	github.com/satori/go.uuid v1.2.0
 	github.com/sirupsen/logrus v1.4.2 // indirect
-	github.com/spf13/cobra v0.0.4 // indirect
+	github.com/spf13/cobra v0.0.5 // indirect
 	golang.org/x/arch v0.0.0-20190520085958-788fe5ffcd8c // indirect
 )
