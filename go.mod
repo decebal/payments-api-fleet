@@ -10,5 +10,5 @@ require (
 	github.com/satori/go.uuid v1.2.0
 	github.com/sirupsen/logrus v1.4.2 // indirect
 	github.com/spf13/cobra v0.0.5 // indirect
-	golang.org/x/arch v0.0.0-20190520085958-788fe5ffcd8c // indirect
+	golang.org/x/arch 4e8777c89be4 // indirect
 )
